@@ -1,4 +1,4 @@
-FROM jenkins/jenkins:lts
+FROM jenkins/jenkins:latest
 LABEL maintainer="Daniel Sánchez Navarro <dansanav@gmail.com>"
 
 ENV KUBE_LATEST_VERSION v.15.0
@@ -14,7 +14,8 @@ RUN apt-get update \
   openssl \
   tar \
   gzip \
-  python3-pip
+  python3-pip \
+  apt-utils
 
 # Install docker
 RUN curl -fsSL https://get.docker.com -o get-docker.sh
