@@ -35,7 +35,12 @@ RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/$KUBE_LAT
  && chmod +x /usr/local/bin/kubectl
 
 # Install dante-cli
-RUN curl -L https://github.com/hielfx/dante-cli/releases/download/$DANTE_CLI_VERSION/dante-cli-alpine-linux-amd64-$DANTE_CLI_VERSION.tar.gz | tar xz -C /usr/local/bin
+RUN curl -L https://github.com/hielfx/dante-cli/releases/download/$DANTE_CLI_VERSION/dante-cli-linux-amd64-$DANTE_CLI_VERSION.tar.gz | tar xz -C /usr/local/bin
+
+# Install kubetpl
+RUN curl -sSL https://github.com/shyiko/kubetpl/releases/download/0.9.0/kubetpl-0.9.0-$(bash -c '[[ $OSTYPE == darwin* ]] && echo darwin || echo linux')-amd64 -o kubetpl \
+  && chmod a+x kubetpl \
+  && mv kubetpl /usr/local/bin
 
 # Drop back to the regular jenkins user - good practice
 USER jenkins
