@@ -2,8 +2,8 @@ FROM jenkins/jenkins:latest
 LABEL maintainer="Daniel Sánchez Navarro <dansanav@gmail.com>"
 
 ENV GO_VERSION=go1.12.9
-ENV KUBE_LATEST_VERSION v.15.0
-ENV DANTE_CLI_VERSION v0.0.5
+ENV KUBE_LATEST_VERSION=v.15.0
+ENV DANTE_CLI_VERSION=v0.0.5
 
 # Install apt dependencies
 USER root
@@ -18,13 +18,13 @@ RUN apt-get update \
   apt-utils
 
 # Install Go
-RUN curl https://dl.google.com/go/go1.13.4.linux-amd64.tar.gz | tar -C /usr/local xzv
+RUN curl -L https://dl.google.com/go/go1.13.4.linux-amd64.tar.gz | tar xz -C /usr/local
 ENV PATH="/usr/local/go/bin:${PATH}"
 
 # Install docker
-RUN curl -fsSL https://get.docker.com -o get-docker.sh
-RUN sh get-docker.sh
-RUN usermod -aG docker jenkins
+RUN curl -fsSL https://get.docker.com -o get-docker.sh \
+  && sh get-docker.sh \
+  &&  usermod -aG docker jenkins
 
 # Install aws cli
 RUN pip3 install awscli --upgrade
@@ -34,7 +34,7 @@ RUN curl -L https://storage.googleapis.com/kubernetes-release/release/${KUBE_LAT
  && chmod +x /usr/local/bin/kubectl
 
 # Install dante-cli
-RUN curl https://github.com/hielfx/dante-cli/releases/download/$DANTE_CLI_VERSION/dante-cli-alpine-linux-amd64-$DANTE_CLI_VERSION.tar.gz | tar -C /usr/local/bin xzv
+RUN curl -L https://github.com/hielfx/dante-cli/releases/download/$DANTE_CLI_VERSION/dante-cli-alpine-linux-amd64-$DANTE_CLI_VERSION.tar.gz | tar xz -C /usr/local/bin
 
 # Drop back to the regular jenkins user - good practice
 USER jenkins
