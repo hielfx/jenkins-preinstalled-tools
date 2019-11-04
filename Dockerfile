@@ -30,7 +30,8 @@ RUN curl -fsSL https://get.docker.com -o get-docker.sh \
 RUN pip3 install awscli --upgrade
 
 # Install kubectl
-RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.16.0/bin/linux/amd64/kubectl -o /usr/local/bin/kubectl \
+RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/$KUBE_LATEST_VERSION/bin/linux/amd64/kubectl \
+ && mv kubectl /usr/local/bin/kubectl \
  && chmod +x /usr/local/bin/kubectl
 
 # Install dante-cli
