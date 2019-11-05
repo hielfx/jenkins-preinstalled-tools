@@ -1,12 +1,17 @@
 FROM jenkins/jenkins:latest
 LABEL maintainer="Daniel Sánchez Navarro <dansanav@gmail.com>"
 
-ENV GO_VERSION=go1.12.9
+ENV GO_VERSION=go1.13.4
+ENV NODE_VERSION=12.13.0
+ENV NVM_VERSION=v0.35.1
 ENV KUBE_LATEST_VERSION=v1.15.0
 ENV DANTE_CLI_VERSION=v0.0.5
 
-# Install apt dependencies
 USER root
+# Replace shell with bash so we can source files
+RUN mv /bin/sh /bin/_sh && ln -s /bin/bash /bin/sh
+
+# Install apt dependencies
 RUN apt-get update \
   && apt-get install -y \
   ruby \
@@ -18,20 +23,22 @@ RUN apt-get update \
   apt-utils
 
 # Install Go
-RUN curl -L https://dl.google.com/go/go1.13.4.linux-amd64.tar.gz | tar xz -C /usr/local
-ENV PATH="/usr/local/go/bin:${PATH}"
+RUN curl -L https://dl.google.com/go/$GO_VERSION.linux-amd64.tar.gz | tar xz -C /usr/local
+ENV PATH=/usr/local/go/bin:$PATH
 
-# Install NVM
-RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.1/install.sh | bash
-RUN echo 'export NVM_DIR="$HOME/.nvm"'                                       >> "$HOME/.bashrc"
-RUN echo '[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm' >> "$HOME/.bashrc"
-RUN echo '[ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion" # This loads nvm bash_completion' >> "$HOME/.bashrc"
+# Install NVM and Nodejs
+RUN mkdir -p /var/local/nvm
+ENV NVM_DIR=/var/local/nvm
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/$NVM_VERSION/install.sh | bash \
+  && source $NVM_DIR/nvm.sh \
+  && nvm install $NODE_VERSION \
+  && nvm alias default $NODE_VERSION \
+  && nvm use default
+ENV NODE_PATH=$NVM_DIR/v$NODE_VERSION/lib/node_modules
+ENV PATH=$NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
 
-# Install nodejs and tools
-RUN bash -c 'source $HOME/.nvm/nvm.sh   && \
-    nvm install --lts                    && \
-    npm install -g yarn && \
-    npm install --prefix "$HOME/.nvm/"'
+# Install yarn
+RUN npm install -g yarn
 
 # Install docker
 RUN curl -fsSL https://get.docker.com -o get-docker.sh \
