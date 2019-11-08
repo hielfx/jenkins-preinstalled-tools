@@ -41,9 +41,9 @@ ENV PATH=$NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
 RUN npm install -g yarn
 
 # Install docker
-# RUN curl -fsSL https://get.docker.com -o get-docker.sh \
-#   && sh get-docker.sh \
-#   &&  usermod -aG docker jenkins
+RUN curl -fsSL https://get.docker.com -o get-docker.sh \
+  && sh get-docker.sh \
+  &&  usermod -aG docker jenkins
 
 # Install aws cli
 RUN pip3 install awscli --upgrade
