@@ -32,6 +32,7 @@ ENV NVM_DIR=/var/local/nvm
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/$NVM_VERSION/install.sh | bash \
   && source $NVM_DIR/nvm.sh \
   && nvm install $NODE_VERSION \
+  && nvm install v6 \
   && nvm alias default $NODE_VERSION \
   && nvm use default
 ENV NODE_PATH=$NVM_DIR/v$NODE_VERSION/lib/node_modules
