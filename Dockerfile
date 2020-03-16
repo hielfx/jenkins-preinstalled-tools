@@ -1,4 +1,4 @@
-FROM jenkins/jenkins:latest
+FROM jenkins/jenkins:lts
 LABEL maintainer="Daniel Sánchez Navarro <dansanav@gmail.com>"
 
 ENV GO_VERSION=go1.13.4
