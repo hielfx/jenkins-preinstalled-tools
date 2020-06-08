@@ -40,6 +40,11 @@ ENV PATH=$NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
 # Install yarn
 RUN npm install -g yarn
 
+#Install node v6 and v8 that I need for a specific project
+RUN source $NVM_DIR/nvm.sh \
+  && nvm install v6 --reinstall-packages-from=$NODE_VERSION \
+  && nvm install v8 --reinstall-packages-from=$NODE_VERSION
+
 # Install docker
 RUN curl -fsSL https://get.docker.com -o get-docker.sh \
   && sh get-docker.sh \
